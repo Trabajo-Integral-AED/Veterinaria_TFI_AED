@@ -4,12 +4,11 @@ MODULO DE ADMINISSTRACION
 =========================
 */
 
-#include<iostream>
+#include<stdio.h>
 #include<conio.h>
 #include<windows.h>
 #include<stdlib.h>
 #include<cstdlib>
-using namespace std;
 
 #define TECLA_ARRIBA 72
 #define TECLA_ABAJO 80
@@ -20,7 +19,7 @@ struct Fecha{
 };
 
 struct Veterinaio{
-	char ApellidoyNombre[60]
+	char ApellidoyNombre[60];
 	int Matricula;
 	int DNI;
 	char Telefono[25];
@@ -28,7 +27,7 @@ struct Veterinaio{
 
 struct Usuarios{
 	char Usuario[10];
-	char Contraseña[10];
+	char Contrasena[10];
 	char ApellidoyNombre[10];
 };
 
@@ -41,10 +40,7 @@ struct Turnos{
 
 void gotoxy(int x, int y);
 int imprimir_menu(const char *titulo, const char *opciones[],int n);
-
-
-void Registrar_veterinario  
-
+ 
 
 
 
@@ -108,6 +104,14 @@ int main(){
 
 
 
+void gotoxy(int x, int y){
+COORD coord;
+coord.X = x;
+coord.Y = y;
+SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), coord);
+
+}
+
 int imprimir_menu(const char *titulo, const char *opciones[],int n) //recibe un menu en forma de vector y realiza la impresion de la flecha de selccion
 {
 	int opcionSeleccionada=1;
@@ -116,14 +120,15 @@ int imprimir_menu(const char *titulo, const char *opciones[],int n) //recibe un 
 	
 	do{
 		system("cls");
-		gotoxy(5,3+ opcionSeleccionada ); cout<<"-->";
+		gotoxy(5,3+ opcionSeleccionada ); printf("-->");
 		
 		//Imprime el titulo
-		gotoxy(15,2); cout<<titulo;
+		
+		gotoxy(15,2); printf("%s",titulo);
 		
 		//Imprime las opciones
 		for(int i =0;i<n;i++){
-			gotoxy(10,4+i); cout<<i+1<<") "<<opciones[i];
+			gotoxy(10,4+i); printf("%d) %s",i+1,opciones[i]);
 		}
 		
 		do{//recibe los comandos de acciones mediante su codigo ASCCI
@@ -156,12 +161,4 @@ int imprimir_menu(const char *titulo, const char *opciones[],int n) //recibe un 
 		}		
 	}while(repetir);
 	return opcionSeleccionada;
-}
-
-void gotoxy(int x, int y){
-COORD coord;
-coord.X = x;
-coord.Y = y;
-SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), coord);
-
 }
