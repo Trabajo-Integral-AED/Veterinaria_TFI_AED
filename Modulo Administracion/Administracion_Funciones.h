@@ -4,7 +4,7 @@
 #include<conio.h>
 #include<stdlib.h>
 #include<string.h>
-
+//agrego algo
 #define TECLA_ARRIBA 72
 #define TECLA_ABAJO 80
 #define ENTER 13
