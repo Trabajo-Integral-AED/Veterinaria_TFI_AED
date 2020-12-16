@@ -1,38 +1,46 @@
 #include<utilidades_veterinaria.h>
-
-struct fecha
+struct fecha_nac // para el nacimiento de las mascotas
 {
 	int dia,mes,anio;
 };
-struct usuarios
+
+struct fecha // para usar en turnos
+{
+	int dia,mes,anio;
+};
+struct usuarios //para ingresar con usuario y contraseña (FILE*p)
 {
 	char usuario[10],contrasena[10],apeynom[60];
 };
-struct veterinario
+struct veterinario // para identificar al veterinario
 {
 	char apeynom[60],telefono[25];
 	int matricula, dni;
 };
-struct mascota
+struct mascota // para identificar a la mascota
 {
 	char apeynom[60], domicilio[60],localidad[60],telefono[25];
 	int dni_dueno;
 	fecha fecha_nacimiento;
 	float peso;
 };
-struct turnos
+struct turnos // para ver turnos asignados
 {
 	int matricula,dni_dueno;
 	fecha fecha_atencion;
 	char detalle_atencion[380];
 };
 
+
 main()
 {
-	FILE*p;
+	FILE*p; //PUNTERO USUARIOS
+	FILE*t; //PUNTERO TURNOS
+	FILE*m; //PUNTERO MASCOTAS
+	FILE*v; //PUNTERO VETERINARIOS
 	usuarios reg;
 	turnos atencion;
-	char texto[380],Usuario[10],Contrasena[10];
+	char Usuario[10],Contrasena[10];
 	bool validado=false;
 	int salir=3;
 ////////////////////////////////////////////////
@@ -59,7 +67,7 @@ main()
 					const char *titulo2="UD. YA INICIO SESION";
 					const char *opciones2[]={"Continuar con sesion actual",
 											"Volver al menu principal para cambiar de usuario",
-                                           };
+                                            };
 					int cant_op2= sizeof(opciones2)/sizeof(opciones2[0]);
 					bool repetir2=1;
 					int opcion2;
@@ -82,11 +90,14 @@ main()
 					}
 					while(repetir2==1);
 				}
-				p=fopen("Usuarios.dat","rb");
+				p=fopen("usuarios.dat","r+b");
 				if(p==NULL)
 				{
-					printf("Error, no se pudo abrir el archivo (Usuarios.dat)");
+					printf("Error, no se pudo abrir el archivo (usuarios.dat)");
 					Sleep(3000);
+					gotoxy(23,4);
+					printf("Por tanto no podra iniciar sesion...");
+					Sleep(4000);
 					break;
 				}
 				system("cls");
@@ -142,7 +153,13 @@ main()
 			case 3:
 				if(validado==true)
 				{
+					v=fopen("veterinarios.dat","rb");
+					if(v==NULL)
+					{
+						
+					}
 					system("cls");
+					gotoxy(75,2);
 					texto_diagnostico(atencion.detalle_atencion);
 					marco();
 					gotoxy(27,2);
