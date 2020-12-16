@@ -1,4 +1,5 @@
 #include<utilidades_veterinaria.h>
+#include<IntroVeterinaria.h>
 struct fecha_nac // para el nacimiento de las mascotas
 {
 	int dia,mes,anio;
@@ -24,25 +25,27 @@ struct mascota // para identificar a la mascota
 	fecha fecha_nacimiento;
 	float peso;
 };
-struct turnos // para ver turnos asignados
+struct turnos // para ver turnos asignados (atención)
 {
 	int matricula,dni_dueno;
 	fecha fecha_atencion;
 	char detalle_atencion[380];
+	bool borrado;
 };
 
 
 main()
 {
-	FILE*p; //PUNTERO USUARIOS
-	FILE*t; //PUNTERO TURNOS
-	FILE*m; //PUNTERO MASCOTAS
-	FILE*v; //PUNTERO VETERINARIOS
-	usuarios reg;
-	turnos atencion;
+	IntroPrincipal();
+	FILE*p; usuarios reg; // USUARIOS
+	FILE*t; mascota ma; turnos atencion;// TURNOS
+	FILE*m; // MASCOTAS
+	FILE*v; veterinario ve; // VETERINARIOS
+	   
 	char Usuario[10],Contrasena[10];
 	bool validado=false;
 	int salir=3;
+	char apeynom[60]; int matricula; //AUXILIARES
 ////////////////////////////////////////////////
 	principio:
 	const char *titulo="MODULO CONSULTORIO VETERINARIO";
@@ -123,6 +126,7 @@ main()
 						gotoxy(23,6);
 						system("pause");
 						validado=true;
+						strcpy(apeynom,reg.apeynom); //COPIO DEL REGISTRO EL APELLIDO Y NOMBRE DEL VETERINARIO
 					}
 					fread(&reg,sizeof(usuarios),1,p);
 				}
@@ -149,23 +153,98 @@ main()
 				fclose(p);
 				break;
 			case 2:
+				if(validado==true)
+				{
+					t=fopen("turnos.dat","a+b");
+					m=fopen("mascotas.dat","a+b");
+					if(v==NULL)
+					{
+						gotoxy(65,2);
+						printf("Error leve turnos.dat");
+						Sleep(1500);
+						gotoxy(65,2);
+						printf("                     ");
+						break;
+					}
+					if(m==NULL)
+					{
+						gotoxy(65,2);
+						printf("Error leve mascotas.dat");
+						Sleep(1500);
+						gotoxy(65,2);
+						printf("                       ");
+						break;
+					}
+					marco();
+					fread(&atencion,sizeof(turnos),1,t);
+					system("cls");
+					marco();
+					int col=0;
+					while(!feof(t))
+					{
+						col++;
+						gotoxy(2,1+col);
+						printf("FECHA DE TURNO: %d/%d/%d",atencion.fecha_atencion.dia,atencion.fecha_atencion.mes,atencion.fecha_atencion.anio);
+						gotoxy(2,2+col);
+						printf("NOMBRE DE LA FLIA. DE MASCOTA: %s",ma.apeynom);
+						fread(&atencion,sizeof(turnos),1,t);
+						getch();
+					}
+				}
+				else
+				{
+					system("cls");
+					marco();
+					gotoxy(23,4);
+					printf("PRIMERO DEBE INGRESAR CON USUARIO Y CLAVE");
+					gotoxy(23,6);
+					system("pause");
+					break;
+				}
+				
 				break;
 			case 3:
 				if(validado==true)
 				{
-					v=fopen("veterinarios.dat","rb");
+					system("cls");
+					v=fopen("veterinarios.dat","rb"); //ABRO DATOS DEL VETERINARIO
 					if(v==NULL)
 					{
-						
+						gotoxy(65,2);
+						printf("Error leve veterinarios.dat");
+						Sleep(1500);
+						gotoxy(65,2);
+						printf("             ");
 					}
-					system("cls");
-					gotoxy(75,2);
+					fread(&ve,sizeof(veterinario),1,v);
+					while(!feof(v))
+					{
+						if(strcmp(apeynom,ve.apeynom)==0)
+						{
+							matricula=ve.matricula;	
+						}
+						fread(&ve,sizeof(veterinario),1,v);
+					}
+	
+					t=fopen("turnos.dat","a+b"); // ACCEDO A REGISTRO DE TURNOS PARA GRABAR INFORME
+					if(t==NULL)
+					{
+						gotoxy(65,2);
+						printf("Error leve turnos.dat");
+						Sleep(1500);
+						gotoxy(65,2);
+						printf("             "); // PARA BORRAR EL MENSAJE
+					}
 					texto_diagnostico(atencion.detalle_atencion);
+					gotoxy(2,6);
+					printf("%s",atencion.detalle_atencion);
 					marco();
 					gotoxy(27,2);
 					printf("DIAGNOSTICO GUARDADO");
-					gotoxy(27,3);
-					for(int sub;sub<20;sub++)
+					gotoxy(2,4);
+					printf("Veterinario a cargo: %s",apeynom);
+					gotoxy(27,3); getch();
+					for(int sub;sub<20;sub++) //DETALLE DE SUBRAYADO
 					{
 						printf("-");
 						Sleep(40);
